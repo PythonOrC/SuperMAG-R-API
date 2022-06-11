@@ -1,4 +1,4 @@
-import supermag_api as sm
+import supermag_api_old as sm
 
 # time = sm.sm_parsestart([2003, 10, 22, 10, 11,22])
 time = "%12.12d" % 3600
