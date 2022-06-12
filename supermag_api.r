@@ -3,7 +3,7 @@ library(jsonlite)
 sm_coreurl <- function(page, logon, start, extent) {
     # internal helper
     # forms a url with page, start, logon, and extent
-    extent <- formatExtent(extent)
+    # extent <- formatExtent(extent)
     url <- paste("https://supermag.jhuapl.edu/services/", page, "?start=", start, "&logon=", logon, "&extent=", extent, sep = "")
     # print("debug:",urlstr)
     return(url)
@@ -193,6 +193,7 @@ sm_keycheck_indices <- function(flagstring) {
 }
 
 sm_geturl <- function(fetchurl, fetch) {
+    # ! requires testing as supermag is down when the time of writing
     if (missing(fetch)) {
         fetch <- "raw"
     }
@@ -204,11 +205,11 @@ sm_geturl <- function(fetchurl, fetch) {
         {
             print(fetchurl)
             fetched <- content(GET(fetchurl))
-            
+
             if (fetch == "raw") {
-                mydata <- fetched
+                mydata <- strsplit(fetched, "\n")[[1]]
             } else if (fetch == "json") {
-                mydata <- fromJSON(fetched)
+                mydata <- format_to_json(fetched)
                 # } else if (fetch == "xml") {
                 #     mydata <- fromXML(fetched)
             } else {
@@ -231,11 +232,68 @@ sm_geturl <- function(fetchurl, fetch) {
     return(list("status" = success, "data" = mydata))
 }
 
+format_to_json <- function(raw) {
 
+    # remove the "OK" and "[]" from the start of the string
+    data <- substr(raw, 5, nchar(raw) - 2)
+
+    # split the long list of json into individual json strings
+    data <- strsplit(data, ",\n")[[1]]
+    print(data)
+    parsed_data <- unlist(fromJSON(data[1]))
+    print(parsed_data)
+    for (i in 2:length(data)) {
+        parsed_data <- Map(c, parsed_data, unlist(fromJSON(data[i])))
+    }
+    return(parsed_data)
+}
+
+SuperMAGGetInventory <- function(logon, start, extent) {
+    # ! requires testing as supermag is down when the time of writing and sm_geturl is not avaliable
+
+    url <- sm_coreurl("inventory.php", logon, start, extent)
+    content <- sm_geturl(url, "raw")
+    status <- content[1]
+    stations <- content[2]
+    if (success == 1) {
+        if (stations[1] > 0) {
+            stations <- stations[2:length(stations) - 1]
+            return(list("status" = 1, "data" = stations))
+        }
+    }
+    return(list("status" = 0, "data" = "No stations found"))
+}
+
+SuperMAGGetIndices <- function(logon, start, extent, flagstring) {
+    # ! requires testing as supermag is down when the time of writing and sm_geturl is not avaliable
+    indices <- sm_keycheck_indices(flagstring)
+    url <- paste(sm_coreurl("indices.php", logon, start, extent), indices, sep = "")
+    content <- sm_geturl(url, "json")
+    status <- content[1]
+    data <- content[2]
+    if (status == 1) {
+        return(list("status" = 1, "data" = data))
+    }
+    return(list("status" = 0, "data" = "No data found"))
+}
+
+SuperMAGGetData <- function(logon, start, extent, flagstring, station) {
+    # ! requires testing as supermag is down when the time of writing and sm_geturl is not avaliable
+    optional_flag <- sm_keycheck_data(flagstring)
+    url <- paste(sm_coreurl("data-api.php", logon, start, extent), "&station=", station, optional_flag, sep = "")
+    content <- sm_geturl(url, "json")
+    status <- content[1]
+    data <- content[2]
+    if (status == 1) {
+        return(list("status" = 1, "data" = data))
+    }
+    return(list("status" = 0, "data" = "No data found"))
+}
 
 # print(sm_coreurl('inventory.php', "SoonerThanLater", "2003-10-29T00:00", "3600"))
 # time <- list(2003, 10, 29, 0, 0)
 # print(sm_parsestart(time))
 # print(sm_keycheck_data("all,baseline=none,delta=start"))
 # sm_keycheck_indices("all,imfall,swiall")
-print(sm_geturl("https://supermag.jhuapl.edu/services/data-api.php?start=2003-10-29T00:00&logon=SoonerThanLater_&extent=000000003600&station=VIC", fetch = "raw"))
+print(sm_geturl("https://supermag.jhuapl.edu/services/data-api.php?logon=SoonerThanLater_&station=VIC&start=2003-10-29T00:00&extent=3600", fetch = "json"))
+# print(format_to_json("OK\n[{\"tval\":1067385600.000000, \"ext\": 60.000000, \"iaga\": \"VIC\", \"N\": {\"nez\": -32.032387, \"geo\": -31.587579}, \"E\": {\"nez\": 3.914707, \"geo\": -6.604813}, \"Z\": {\"nez\": 30.236118, \"geo\": 30.236118}},\n{\"tval\":1067385660.000000, \"ext\": 60.000000, \"iaga\": \"VIC\", \"N\": {\"nez\": -29.978230, \"geo\": -29.734411}, \"E\": {\"nez\": 4.199440, \"geo\": -5.674006}, \"Z\": {\"nez\": 31.153442, \"geo\": 31.153442}},\n{\"tval\":1067385720.000000, \"ext\": 60.000000, \"iaga\": \"VIC\", \"N\": {\"nez\": -26.973866, \"geo\": -26.878542}, \"E\": {\"nez\": 4.163980, \"geo\": -4.740480}, \"Z\": {\"nez\": 32.070774, \"geo\": 32.070774}},\n{\"tval\":1067385780.000000, \"ext\": 60.000000, \"iaga\": \"VIC\", \"N\": {\"nez\": -22.710659, \"geo\": -22.015141}, \"E\": {\"nez\": 1.594514, \"geo\": -5.800867}, \"Z\": {\"nez\": 33.988182, \"geo\": 33.988182}}]\n"))
