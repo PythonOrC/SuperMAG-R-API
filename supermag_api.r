@@ -1,3 +1,10 @@
+# TODO: 1. test the methods sm_geturl and the three main api
+# TODO: 2. test entire flow the api
+# TODO: 3. better documentation
+# TODO: 4. add support for other data types
+# TODO: 5. better error handling
+# TODO: 6. add more potential user input error checking
+
 library(jsonlite)
 
 sm_coreurl <- function(page, logon, start, extent) {
