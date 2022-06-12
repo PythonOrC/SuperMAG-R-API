@@ -495,4 +495,4 @@ def supermag_testing(userid):
 #sm_microtest(2,userid)   # sample data fetch, with plotting
 #sm_microtest(3,userid)   # sample indices fetch, with plotting
 
-print(sm_keycheck_indices("DARKglat"))
+print(sm_keycheck_indices("all,imfall,swiall"))

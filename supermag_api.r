@@ -95,7 +95,6 @@ sm_keycheck_indices <- function(flagstring) {
     # internal helper method that checks the flagstring for valid indices keyword
     # returns a parsed string of indices
     user_keys <- strsplit(flagstring, ",")[[1]]
-    print(user_keys)
     basekey <- list("sme", "sml", "smu", "mlat", "mlt", "glat", "glon", "stid", "num")
     pluskey <- list("smr", "ltsmr", "ltnum", "nsmr")
     swi <- list("pdyn", "epsilon", "newell", "clockgse", "clockgsm", "density")
@@ -138,7 +137,7 @@ sm_keycheck_indices <- function(flagstring) {
                     indices <- paste(indices, b, "s,", sep = "")
                 } else if (u == paste(b, "d", sep = "") | u == paste("dark", b, sep = "")) {
                     indices <- paste(indices, b, "d,", sep = "")
-                } else if (u == paste(b, "r", sep = "") | u == paste("regional", b, sep = "") | u == paste("reg", b, sep = "")) {
+                } else if (u %in% paste(b, "r", sep = "") | u %in% paste(list("regional", "reg"), b, sep = "")) {
                     indices <- paste(indices, b, "r,", sep = "")
                 }
             }
@@ -148,11 +147,11 @@ sm_keycheck_indices <- function(flagstring) {
     if (indices == "&indices=") {
         indices <- ""
     } else {
-        indices <- substr(indices, 1, length(indices) - 1)
+        indices <- substr(indices, 1, nchar(indices) - 1)
     }
 
     # check if keyword "swi" exist in flagstring
-    if ("swi" %in% user_keys | "swiall" %in% user_keys) {
+    if ("swiall" %in% user_keys) {
         swi <- paste(swi, "all,", sep = "")
     } else {
         for (u in user_keys) {
@@ -164,11 +163,11 @@ sm_keycheck_indices <- function(flagstring) {
     if (swi == "&swi=") {
         swi <- ""
     } else {
-        swi <- substr(swi, 1, length(swi) - 1)
+        swi <- substr(swi, 1, nchar(swi) - 1)
     }
 
     # check if keyword "imf" exist in flagstring
-    if ("imf" %in% user_keys | "imfall" %in% user_keys) {
+    if ("imfall" %in% user_keys) {
         imf <- paste(imf, "all,", sep = "")
     } else {
         for (u in user_keys) {
@@ -177,11 +176,15 @@ sm_keycheck_indices <- function(flagstring) {
             }
         }
     }
-    if (imf == "&swi=") {
+    print(imf)
+    print(nchar(imf))
+    if (imf == "&imf=") {
         imf <- ""
     } else {
-        imf <- substr(imf, 1, length(imf) - 1)
+        imf <- substr(imf, 1, nchar(imf)-1)
     }
+    print(imf)
+    
     return(paste(indices, swi, imf, sep = ""))
 }
 
@@ -193,4 +196,6 @@ sm_keycheck_indices <- function(flagstring) {
 # time <- list(2003, 10, 29, 0, 0)
 # print(sm_parsestart(time))
 # print(sm_keycheck_data("all,baseline=none,delta=start"))
-sm_keycheck_indices("sme,sml,sunmlt,stids,darkglat,smer,stidd,regsmu,regionalnum")
+sm_keycheck_indices("all,imfall,swiall")
+
+
