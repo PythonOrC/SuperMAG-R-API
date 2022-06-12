@@ -495,4 +495,4 @@ def supermag_testing(userid):
 #sm_microtest(2,userid)   # sample data fetch, with plotting
 #sm_microtest(3,userid)   # sample indices fetch, with plotting
 
-print(sm_keycheck_indices("all,imfall,swiall"))
+print(sm_GetUrl("https://supermag.jhuapl.edu/services/data-api.php?start=2003-10-29T00:00&logon=SoonerThanLater_&extent=000000003600&station=VIC",fetch="json"))

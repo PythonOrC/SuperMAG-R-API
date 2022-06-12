@@ -1,3 +1,5 @@
+library(jsonlite)
+
 sm_coreurl <- function(page, logon, start, extent) {
     # internal helper
     # forms a url with page, start, logon, and extent
@@ -143,12 +145,6 @@ sm_keycheck_indices <- function(flagstring) {
             }
         }
     }
-    # clean us indices
-    if (indices == "&indices=") {
-        indices <- ""
-    } else {
-        indices <- substr(indices, 1, nchar(indices) - 1)
-    }
 
     # check if keyword "swi" exist in flagstring
     if ("swiall" %in% user_keys) {
@@ -160,11 +156,7 @@ sm_keycheck_indices <- function(flagstring) {
             }
         }
     }
-    if (swi == "&swi=") {
-        swi <- ""
-    } else {
-        swi <- substr(swi, 1, nchar(swi) - 1)
-    }
+
 
     # check if keyword "imf" exist in flagstring
     if ("imfall" %in% user_keys) {
@@ -176,19 +168,68 @@ sm_keycheck_indices <- function(flagstring) {
             }
         }
     }
-    print(imf)
-    print(nchar(imf))
+
+
+    # clean up the indices
+    if (indices == "&indices=") {
+        indices <- ""
+    } else {
+        indices <- substr(indices, 1, nchar(indices) - 1)
+    }
+
+    if (swi == "&swi=") {
+        swi <- ""
+    } else {
+        swi <- substr(swi, 1, nchar(swi) - 1)
+    }
+
     if (imf == "&imf=") {
         imf <- ""
     } else {
-        imf <- substr(imf, 1, nchar(imf)-1)
+        imf <- substr(imf, 1, nchar(imf) - 1)
     }
-    print(imf)
-    
+
     return(paste(indices, swi, imf, sep = ""))
 }
 
+sm_geturl <- function(fetchurl, fetch) {
+    if (missing(fetch)) {
+        fetch <- "raw"
+    }
 
+    success <- 0 # gets changed to 1 good data is fetched
+    mydata <- "ERROR: Unknown error" # prepare for the worst
+    # If the url object throws an error it will be caught here
+    tryCatch(
+        {
+            print(fetchurl)
+            fetched <- content(GET(fetchurl))
+            
+            if (fetch == "raw") {
+                mydata <- fetched
+            } else if (fetch == "json") {
+                mydata <- fromJSON(fetched)
+                # } else if (fetch == "xml") {
+                #     mydata <- fromXML(fetched)
+            } else {
+                mydata <- "ERROR: Unknown fetch type"
+            }
+            success <- 1
+        },
+        error = function(e) {
+            print(e)
+            mydata <- e$message
+            success <- 0
+        },
+        warning = function(w) {
+            print(w)
+            mydata <- w$message
+            success <- 0
+        }
+    )
+    # print("debug: function return type is:",type(mydata),".")
+    return(list("status" = success, "data" = mydata))
+}
 
 
 
@@ -196,6 +237,5 @@ sm_keycheck_indices <- function(flagstring) {
 # time <- list(2003, 10, 29, 0, 0)
 # print(sm_parsestart(time))
 # print(sm_keycheck_data("all,baseline=none,delta=start"))
-sm_keycheck_indices("all,imfall,swiall")
-
-
+# sm_keycheck_indices("all,imfall,swiall")
+print(sm_geturl("https://supermag.jhuapl.edu/services/data-api.php?start=2003-10-29T00:00&logon=SoonerThanLater_&extent=000000003600&station=VIC", fetch = "raw"))

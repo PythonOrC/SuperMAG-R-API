@@ -68,13 +68,13 @@ SuperMAGGetData <- function(logon, start, extent, flagstring, station) {
   # indices <- sm_keycheck_data(flagstring)
   # url <- paste(url, indices, "&station=", station.upper())
   url <- paste(url, "&station=", station, sep = "")
-
-  result <- sm_GetUrl(url)
+  print(url)
+  # result <- sm_GetUrl(url)
   
-  status <- result$status
-  data_list <- result$data
-  print(status)
-  print(data_list)
+  # status <- result$status
+  # data_list <- result$data
+  # print(status)
+  # print(data_list)
 }
 
-# SuperMAGGetData("SoonerThanLater_","2003-10-29T00:00", "3600", "", "VIC")
+SuperMAGGetData("SoonerThanLater_","2003-10-29T00:00", "3600", "", "VIC")
