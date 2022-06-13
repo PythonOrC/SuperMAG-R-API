@@ -6,6 +6,7 @@
 # TODO: 6. add more potential user input error checking
 
 library(jsonlite)
+library(httr)
 
 sm_coreurl <- function(page, logon, start, extent) {
     # internal helper
@@ -215,6 +216,8 @@ sm_geturl <- function(fetchurl, fetch) {
 
             if (fetch == "raw") {
                 mydata <- strsplit(fetched, "\n")[[1]]
+
+                mydata <- mydata[-2]
             } else if (fetch == "json") {
                 mydata <- format_to_json(fetched)
                 # } else if (fetch == "xml") {
@@ -246,9 +249,7 @@ format_to_json <- function(raw) {
 
     # split the long list of json into individual json strings
     data <- strsplit(data, ",\n")[[1]]
-    print(data)
     parsed_data <- unlist(fromJSON(data[1]))
-    print(parsed_data)
     for (i in 2:length(data)) {
         parsed_data <- Map(c, parsed_data, unlist(fromJSON(data[i])))
     }
@@ -259,12 +260,16 @@ SuperMAGGetInventory <- function(logon, start, extent) {
     # ! requires testing as supermag is down when the time of writing and sm_geturl is not avaliable
 
     url <- sm_coreurl("inventory.php", logon, start, extent)
-    content <- sm_geturl(url, "raw")
+    content <- sm_geturl(url)
     status <- content[1]
     stations <- content[2]
-    if (success == 1) {
-        if (stations[1] > 0) {
-            stations <- stations[2:length(stations) - 1]
+
+
+    if (status == 1) {
+        print(length(stations[[1]]))
+        if (length(stations[[1]]) > 1) {
+            stations <- stations[[1]]
+            stations <- stations[2:length(stations)]
             return(list("status" = 1, "data" = stations))
         }
     }
@@ -291,10 +296,11 @@ SuperMAGGetData <- function(logon, start, extent, flagstring, station) {
     content <- sm_geturl(url, "json")
     status <- content[1]
     data <- content[2]
+    # print(data)
     if (status == 1) {
-        return(list("status" = 1, "data" = data))
+        return(content)
     }
-    return(list("status" = 0, "data" = "No data found"))
+    return(list("status" = status, "data" = "No data found"))
 }
 
 # print(sm_coreurl('inventory.php', "SoonerThanLater", "2003-10-29T00:00", "3600"))
@@ -302,5 +308,8 @@ SuperMAGGetData <- function(logon, start, extent, flagstring, station) {
 # print(sm_parsestart(time))
 # print(sm_keycheck_data("all,baseline=none,delta=start"))
 # sm_keycheck_indices("all,imfall,swiall")
-print(sm_geturl("https://supermag.jhuapl.edu/services/data-api.php?logon=SoonerThanLater_&station=VIC&start=2003-10-29T00:00&extent=3600", fetch = "json"))
+# print(sm_geturl("https://supermag.jhuapl.edu/services/data-api.php?logon=SoonerThanLater_&station=VIC&start=2003-10-29T00:00&extent=3600", fetch = "json"))
 # print(format_to_json("OK\n[{\"tval\":1067385600.000000, \"ext\": 60.000000, \"iaga\": \"VIC\", \"N\": {\"nez\": -32.032387, \"geo\": -31.587579}, \"E\": {\"nez\": 3.914707, \"geo\": -6.604813}, \"Z\": {\"nez\": 30.236118, \"geo\": 30.236118}},\n{\"tval\":1067385660.000000, \"ext\": 60.000000, \"iaga\": \"VIC\", \"N\": {\"nez\": -29.978230, \"geo\": -29.734411}, \"E\": {\"nez\": 4.199440, \"geo\": -5.674006}, \"Z\": {\"nez\": 31.153442, \"geo\": 31.153442}},\n{\"tval\":1067385720.000000, \"ext\": 60.000000, \"iaga\": \"VIC\", \"N\": {\"nez\": -26.973866, \"geo\": -26.878542}, \"E\": {\"nez\": 4.163980, \"geo\": -4.740480}, \"Z\": {\"nez\": 32.070774, \"geo\": 32.070774}},\n{\"tval\":1067385780.000000, \"ext\": 60.000000, \"iaga\": \"VIC\", \"N\": {\"nez\": -22.710659, \"geo\": -22.015141}, \"E\": {\"nez\": 1.594514, \"geo\": -5.800867}, \"Z\": {\"nez\": 33.988182, \"geo\": 33.988182}}]\n"))
+# print(SuperMAGGetData("SoonerThanLater_", "2003-10-29T00:00", "3600", "all,baseline=none,delta=start", "VIC"))
+# print(SuperMAGGetIndices("SoonerThanLater_", "2003-10-29T00:00", "3600", "baseall,imfall,swiall"))
+# print(SuperMAGGetInventory("SoonerThanLater_", "2003-10-29T00:00", "3600"))
