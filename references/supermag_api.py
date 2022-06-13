@@ -1,15 +1,14 @@
-# import urllib.request
+import urllib.request
+# the 'certifi' library is required at APL and other sites that
+# require SSL certs for web fetches.  If you need this, install certifi
+# (pip install certifi)
 
-# # the 'certifi' library is required at APL and other sites that
-# # require SSL certs for web fetches.  If you need this, install certifi
-# # (pip install certifi)
+import importlib
+certspec = importlib.util.find_spec("certifi")
+found = certspec is not None
+if found: import certifi
 
-# import importlib
-# certspec = importlib.util.find_spec("certifi")
-# found = certspec is not None
-# if found: import certifi
-
-# import pandas as pd  # dataframes and also to_datetime
+import pandas as pd  # dataframes and also to_datetime
 import json
 import re
 import datetime
@@ -147,7 +146,7 @@ def sm_keycheck_indices(flagstring):
   # sunkeys: alias allowed of SUN___ -> ___s
   sunkeys=["smes","smls","smus","mlats","mlts","glats","glons","stids","nums"]
   # darkkeys: alias allowed of DARK___ -> ___d
-  darkkeys=["smed","smld","smud","mlatd","mltd","glatd","glond","stidd","num"]
+  darkkeys=["smed","smld","smud","mlatd","mltd","glatd","glond","stidd","numd"]     #missing a "d" in "numd"
   # regkeys: alias allowed of REGIONAL___ -> ___r
   regkeys=["smer","smlr","smur","mlatr","mltr","glatr","glonr","stidr","numr"]
   pluskeys=["smr","ltsmr","ltnum","nsmr"]
@@ -183,11 +182,11 @@ def sm_keycheck_indices(flagstring):
       regkey2="reg"+mykey # allow alias
       if chk == mykey:
         indices += mykey+','  # base key is correct
-      elif sunkey == mykey:
+      elif sunkey == chk:                                   # this is my thoughts on the conditions, change the mykeyto chk
         indices += mykey+'s,'  # alias, so base key + 's'
-      elif darkkey == mykey:
+      elif darkkey == chk:                                  # same for this condition
         indices += mykey+'d,'  # alias, so base key + 'd'
-      elif regkey1 == mykey or regkey2 == mykey:
+      elif regkey1 == chk or regkey2 == chk:                # same for this condition
         indices += mykey+'r,'  # alias, so base key + 'r'
 
     for ikey in range(0,len(swikeys)):
@@ -496,5 +495,5 @@ def supermag_testing(userid):
 #sm_microtest(3,userid)   # sample indices fetch, with plotting
 
 # print(SuperMAGGetData("SoonerThanLater_","2003-10-29T00:00",3600, "all,baseline=none,delta=start", "VIC"))
-print(sm_keycheck_indices("darksme,sunnum,mlat,mlt"))
+print(sm_keycheck_indices("sunnum,mlat,mlt"))
 print(sm_keycheck_indices("smed,nums,mlat,mlt"))
