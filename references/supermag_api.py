@@ -4,12 +4,12 @@ import urllib.request
 # require SSL certs for web fetches.  If you need this, install certifi
 # (pip install certifi)
 
-# import importlib
-# certspec = importlib.util.find_spec("certifi")
-# found = certspec is not None
-# if found: import certifi
+import importlib
+certspec = importlib.util.find_spec("certifi")
+found = certspec is not None
+if found: import certifi
 
-# import pandas as pd  # dataframes and also to_datetime
+import pandas as pd  # dataframes and also to_datetime
 import json
 import re
 import datetime
@@ -495,4 +495,4 @@ def supermag_testing(userid):
 #sm_microtest(2,userid)   # sample data fetch, with plotting
 #sm_microtest(3,userid)   # sample indices fetch, with plotting
 
-print(sm_GetUrl(r"https://supermag.jhuapl.edu/services/data-api.php?start=2003-10-29T00:00&logon=SoonerThanLater_&extent=000000003600&station=VIC",fetch="json"))
+print(SuperMAGGetData("SoonerThanLater_","2003-10-29T00:00",3600, "all,baseline=none,delta=start", "VIC"))

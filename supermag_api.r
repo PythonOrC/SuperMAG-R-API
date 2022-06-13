@@ -211,7 +211,7 @@ sm_geturl <- function(fetchurl, fetch) {
     # If the url object throws an error it will be caught here
     tryCatch(
         {
-            print(fetchurl)
+            # print(fetchurl)
             fetched <- content(GET(fetchurl))
 
             if (fetch == "raw") {
@@ -266,7 +266,7 @@ SuperMAGGetInventory <- function(logon, start, extent) {
 
 
     if (status == 1) {
-        print(length(stations[[1]]))
+        # print(length(stations[[1]]))
         if (length(stations[[1]]) > 1) {
             stations <- stations[[1]]
             stations <- stations[2:length(stations)]
@@ -313,3 +313,6 @@ SuperMAGGetData <- function(logon, start, extent, flagstring, station) {
 # print(SuperMAGGetData("SoonerThanLater_", "2003-10-29T00:00", "3600", "all,baseline=none,delta=start", "VIC"))
 # print(SuperMAGGetIndices("SoonerThanLater_", "2003-10-29T00:00", "3600", "baseall,imfall,swiall"))
 # print(SuperMAGGetInventory("SoonerThanLater_", "2003-10-29T00:00", "3600"))
+
+
+
