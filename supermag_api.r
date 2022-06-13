@@ -1,5 +1,4 @@
-# TODO: 1. test the methods sm_geturl and the three main api
-# TODO: 2. test entire flow the api
+# based on supermag_api.py by S. Antunes
 # TODO: 3. better documentation
 # TODO: 4. add support for other data types
 # TODO: 5. better error handling
@@ -313,6 +312,3 @@ SuperMAGGetData <- function(logon, start, extent, flagstring, station) {
 # print(SuperMAGGetData("SoonerThanLater_", "2003-10-29T00:00", "3600", "all,baseline=none,delta=start", "VIC"))
 # print(SuperMAGGetIndices("SoonerThanLater_", "2003-10-29T00:00", "3600", "baseall,imfall,swiall"))
 # print(SuperMAGGetInventory("SoonerThanLater_", "2003-10-29T00:00", "3600"))
-
-
-
