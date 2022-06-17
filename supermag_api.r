@@ -265,10 +265,10 @@ SuperMAGGetInventory <- function(logon, start, extent) {
         if (length(stations[[1]]) > 1) {
             stations <- stations[[1]]
             stations <- stations[2:length(stations)]
-            return(list("status" = 1, "data" = stations))
+            return(list("status" = 1, "stations" = stations))
         }
     }
-    return(list("status" = 0, "data" = "No stations found"))
+    return(list("status" = 0, "stations" = "No stations found"))
 }
 
 SuperMAGGetIndices <- function(logon, start, extent, flagstring) {
@@ -276,11 +276,11 @@ SuperMAGGetIndices <- function(logon, start, extent, flagstring) {
     url <- paste(sm_coreurl("indices.php", logon, start, extent), indices, sep = "")
     content <- sm_geturl(url, "json")
     status <- content[1]
-    data <- content[2]
+    data <- content[[2]]
     if (status == 1) {
-        return(list("status" = 1, "data" = data))
+        return(list("status" = 1, "indices" = data))
     }
-    return(list("status" = 0, "data" = "No data found"))
+    return(list("status" = 0, "indices" = "No data found"))
 }
 
 SuperMAGGetData <- function(logon, start, extent, flagstring, station) {
@@ -305,4 +305,8 @@ SuperMAGGetData <- function(logon, start, extent, flagstring, station) {
 # print(format_to_json("OK\n[{\"tval\":1067385600.000000, \"ext\": 60.000000, \"iaga\": \"VIC\", \"N\": {\"nez\": -32.032387, \"geo\": -31.587579}, \"E\": {\"nez\": 3.914707, \"geo\": -6.604813}, \"Z\": {\"nez\": 30.236118, \"geo\": 30.236118}},\n{\"tval\":1067385660.000000, \"ext\": 60.000000, \"iaga\": \"VIC\", \"N\": {\"nez\": -29.978230, \"geo\": -29.734411}, \"E\": {\"nez\": 4.199440, \"geo\": -5.674006}, \"Z\": {\"nez\": 31.153442, \"geo\": 31.153442}},\n{\"tval\":1067385720.000000, \"ext\": 60.000000, \"iaga\": \"VIC\", \"N\": {\"nez\": -26.973866, \"geo\": -26.878542}, \"E\": {\"nez\": 4.163980, \"geo\": -4.740480}, \"Z\": {\"nez\": 32.070774, \"geo\": 32.070774}},\n{\"tval\":1067385780.000000, \"ext\": 60.000000, \"iaga\": \"VIC\", \"N\": {\"nez\": -22.710659, \"geo\": -22.015141}, \"E\": {\"nez\": 1.594514, \"geo\": -5.800867}, \"Z\": {\"nez\": 33.988182, \"geo\": 33.988182}}]\n"))
 # print(SuperMAGGetData("SoonerThanLater_", "2003-10-29T00:00", "3600", "all,baseline=none,delta=start", "VIC"))
 # print(SuperMAGGetIndices("SoonerThanLater_", "2003-10-29T00:00", "3600", "baseall,imfall,swiall"))
-# print(SuperMAGGetInventory("SoonerThanLater_", "2003-10-29T00:00", "3600"))
+# content = SuperMAGGetInventory("SoonerThanLater_", "2003-10-29T00:00", "3600")
+# print(content$stations)
+# status = 0
+# data = ""
+# list(status, data) <- content
