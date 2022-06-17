@@ -256,8 +256,6 @@ format_to_json <- function(raw) {
 }
 
 SuperMAGGetInventory <- function(logon, start, extent) {
-    # ! requires testing as supermag is down when the time of writing and sm_geturl is not avaliable
-
     url <- sm_coreurl("inventory.php", logon, start, extent)
     content <- sm_geturl(url)
     status <- content[1]
@@ -276,7 +274,6 @@ SuperMAGGetInventory <- function(logon, start, extent) {
 }
 
 SuperMAGGetIndices <- function(logon, start, extent, flagstring) {
-    # ! requires testing as supermag is down when the time of writing and sm_geturl is not avaliable
     indices <- sm_keycheck_indices(flagstring)
     url <- paste(sm_coreurl("indices.php", logon, start, extent), indices, sep = "")
     content <- sm_geturl(url, "json")
@@ -289,7 +286,6 @@ SuperMAGGetIndices <- function(logon, start, extent, flagstring) {
 }
 
 SuperMAGGetData <- function(logon, start, extent, flagstring, station) {
-    # ! requires testing as supermag is down when the time of writing and sm_geturl is not avaliable
     optional_flag <- sm_keycheck_data(flagstring)
     url <- paste(sm_coreurl("data-api.php", logon, start, extent), "&station=", station, optional_flag, sep = "")
     content <- sm_geturl(url, "json")
