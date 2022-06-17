@@ -100,7 +100,6 @@ sm_keycheck_data <- function(flagstring) {
 }
 
 sm_keycheck_indices <- function(flagstring) {
-    # !requires testing, finished but untested
     # internal helper method that checks the flagstring for valid indices keyword
     # returns a parsed string of indices
     user_keys <- strsplit(flagstring, ",")[[1]]
@@ -200,7 +199,6 @@ sm_keycheck_indices <- function(flagstring) {
 }
 
 sm_geturl <- function(fetchurl, fetch) {
-    # ! requires testing as supermag is down when the time of writing
     if (missing(fetch)) {
         fetch <- "raw"
     }
