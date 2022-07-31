@@ -1,4 +1,24 @@
 # based on supermag_api.py by S. Antunes
+# Created by Hongyi (Ethan) Hu from The Overlake School.
+# Created on: May 11, 2022
+# Last modified: July 31, 2022
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+# The best way to report issues would be on the GitHub repository. see
+# <https://github.com/PythonOrC/SuperMAG-R-API/issues>
+
 # TODO: 3. better documentation
 # TODO: 4. add support for other data types
 # TODO: 5. better error handling
@@ -259,12 +279,14 @@ SuperMAGGetInventory <- function(logon, start, extent) {
     status <- content[1]
     stations <- content[2]
 
-
+    # print(status)
     if (status == 1) {
         # print(length(stations[[1]]))
         if (length(stations[[1]]) > 1) {
             stations <- stations[[1]]
+
             stations <- stations[2:length(stations)]
+            print(stations)
             return(list("status" = 1, "stations" = stations))
         }
     }
@@ -296,16 +318,16 @@ SuperMAGGetData <- function(logon, start, extent, flagstring, station) {
     return(list("status" = status, "data" = "No data found"))
 }
 
-# print(sm_coreurl('inventory.php', "SoonerThanLater", "2003-10-29T00:00", "3600"))
+# print(sm_coreurl('inventory.php', "", "2003-10-29T00:00", "3600"))
 # time <- list(2003, 10, 29, 0, 0)
 # print(sm_parsestart(time))
 # print(sm_keycheck_data("all,baseline=none,delta=start"))
 # sm_keycheck_indices("all,imfall,swiall")
-# print(sm_geturl("https://supermag.jhuapl.edu/services/data-api.php?logon=SoonerThanLater_&station=VIC&start=2003-10-29T00:00&extent=3600", fetch = "json"))
+# print(sm_geturl("https://supermag.jhuapl.edu/services/data-api.php?logon=&station=VIC&start=2003-10-29T00:00&extent=3600", fetch = "json"))
 # print(format_to_json("OK\n[{\"tval\":1067385600.000000, \"ext\": 60.000000, \"iaga\": \"VIC\", \"N\": {\"nez\": -32.032387, \"geo\": -31.587579}, \"E\": {\"nez\": 3.914707, \"geo\": -6.604813}, \"Z\": {\"nez\": 30.236118, \"geo\": 30.236118}},\n{\"tval\":1067385660.000000, \"ext\": 60.000000, \"iaga\": \"VIC\", \"N\": {\"nez\": -29.978230, \"geo\": -29.734411}, \"E\": {\"nez\": 4.199440, \"geo\": -5.674006}, \"Z\": {\"nez\": 31.153442, \"geo\": 31.153442}},\n{\"tval\":1067385720.000000, \"ext\": 60.000000, \"iaga\": \"VIC\", \"N\": {\"nez\": -26.973866, \"geo\": -26.878542}, \"E\": {\"nez\": 4.163980, \"geo\": -4.740480}, \"Z\": {\"nez\": 32.070774, \"geo\": 32.070774}},\n{\"tval\":1067385780.000000, \"ext\": 60.000000, \"iaga\": \"VIC\", \"N\": {\"nez\": -22.710659, \"geo\": -22.015141}, \"E\": {\"nez\": 1.594514, \"geo\": -5.800867}, \"Z\": {\"nez\": 33.988182, \"geo\": 33.988182}}]\n"))
-# print(SuperMAGGetData("SoonerThanLater_", "2003-10-29T00:00", "3600", "all,baseline=none,delta=start", "VIC"))
-# print(SuperMAGGetIndices("SoonerThanLater_", "2003-10-29T00:00", "3600", "baseall,imfall,swiall"))
-# content = SuperMAGGetInventory("SoonerThanLater_", "2003-10-29T00:00", "3600")
+# print(SuperMAGGetData("", "2003-10-29T00:00", "3600", "all,baseline=none,delta=start", "VIC"))
+# print(SuperMAGGetIndices("", "2003-10-29T00:00", "3600", "baseall,imfall,swiall"))
+content <- SuperMAGGetInventory("", "2003-10-29T00:00", "3600")
 # print(content$stations)
 # status = 0
 # data = ""
