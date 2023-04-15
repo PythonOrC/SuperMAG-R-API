@@ -1,5 +1,5 @@
 # SuperMAG R API
-
+[![DOI](https://zenodo.org/badge/491316450.svg)](https://zenodo.org/badge/latestdoi/491316450)
 R language api for donwloading data from https://supermag.jhuapl.edu/
 **Package httr is required**
 
